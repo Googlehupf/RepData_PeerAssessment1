@@ -131,9 +131,13 @@ time.max.steps &lt;- interval.means$interval[max.steps]</code></pre>
 <p>and equals <code>2304</code>.</p>
 <p>Next, we need to impute these missing values.</p>
 <p><strong>The devised strategy here is to replace NA values with the mean for their respective 5-minute interval.</strong><br />We create a new dataset with the missing data filled in according to this strategy:</p>
-<pre class="r"><code>data.NA.filledin &lt;- data  ## copy original data
-data.NA.filledin$interval.mean &lt;- rep(interval.means$mean.per.interval, 61)  ## new column w/ interval means, known from analysing the average daily activity patterns (see above), for all 61 days in the dataset
-data.NA.filledin$steps &lt;- ifelse(is.na(data.NA.filledin$steps), data.NA.filledin$interval.mean, data.NA.filledin$steps)  ## if steps = NA, replace w/ interval mean from the new column</code></pre>
+<pre class="r"><code>## copy original data
+data.NA.filledin &lt;- data
+## new column w/ interval means, known from analysing the average daily activity patterns
+## (see above), for all 61 days in the dataset
+data.NA.filledin$interval.mean &lt;- rep(interval.means$mean.per.interval, 61)
+## if steps = NA, replace w/ interval mean from the new column
+data.NA.filledin$steps &lt;- ifelse(is.na(data.NA.filledin$steps), data.NA.filledin$interval.mean, data.NA.filledin$steps)</code></pre>
 <p>With the new dataset, we make a new histogram of the number of steps taken each day:</p>
 <pre class="r"><code>## as before, group by date and sum the number of steps:
 steps.per.day.NA.filledin &lt;- data.NA.filledin %&gt;%
@@ -152,7 +156,9 @@ hist(steps.per.day.NA.filledin$sum.of.steps,
 <pre class="r"><code>steps.mean.NA.filledin &lt;- as.integer(mean(steps.per.day.NA.filledin$sum.of.steps))
 steps.median.NA.filledin &lt;- median(steps.per.day.NA.filledin$sum.of.steps)</code></pre>
 <p>Let’s compare the results:</p>
-<pre class="r"><code>comparison &lt;- matrix(c(steps.mean, steps.mean.NA.filledin, steps.median, steps.median.NA.filledin), ncol=2, byrow=TRUE)
+<pre class="r"><code>comparison &lt;- matrix(c(steps.mean, steps.mean.NA.filledin, steps.median, steps.median.NA.filledin), 
+                     ncol = 2, 
+                     byrow = TRUE)
 colnames(comparison) &lt;- c(&quot;NA removed&quot;, &quot;NA replaced w/ interval mean&quot;)
 rownames(comparison) &lt;- c(&quot;mean&quot;, &quot;median&quot;)
 as.table(comparison)</code></pre>
