@@ -102,9 +102,13 @@ Next, we need to impute these missing values.
 **The devised strategy here is to replace NA values with the mean for their respective 5-minute interval.**  
 We create a new dataset with the missing data filled in according to this strategy:
 ```{r}
-data.NA.filledin <- data  ## copy original data
-data.NA.filledin$interval.mean <- rep(interval.means$mean.per.interval, 61)  ## new column w/ interval means, known from analysing the average daily activity patterns (see above), for all 61 days in the dataset
-data.NA.filledin$steps <- ifelse(is.na(data.NA.filledin$steps), data.NA.filledin$interval.mean, data.NA.filledin$steps)  ## if steps = NA, replace w/ interval mean from the new column
+## copy original data
+data.NA.filledin <- data
+## new column w/ interval means, known from analysing the average daily activity patterns
+## (see above), for all 61 days in the dataset
+data.NA.filledin$interval.mean <- rep(interval.means$mean.per.interval, 61)
+## if steps = NA, replace w/ interval mean from the new column
+data.NA.filledin$steps <- ifelse(is.na(data.NA.filledin$steps), data.NA.filledin$interval.mean, data.NA.filledin$steps)
 ```
 
 With the new dataset, we make a new histogram of the number of steps taken each day:
@@ -131,7 +135,9 @@ steps.median.NA.filledin <- median(steps.per.day.NA.filledin$sum.of.steps)
 
 Let's compare the results:
 ```{r}
-comparison <- matrix(c(steps.mean, steps.mean.NA.filledin, steps.median, steps.median.NA.filledin), ncol=2, byrow=TRUE)
+comparison <- matrix(c(steps.mean, steps.mean.NA.filledin, steps.median, steps.median.NA.filledin), 
+                     ncol = 2, 
+                     byrow = TRUE)
 colnames(comparison) <- c("NA removed", "NA replaced w/ interval mean")
 rownames(comparison) <- c("mean", "median")
 as.table(comparison)
